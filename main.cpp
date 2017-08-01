@@ -4,11 +4,13 @@ int main( int argc, char* args[] )
 {
     SDL_Surface* screen = NULL;
 
-    //Start SDL
+    int WIDTH = 480;
+    int HEIGHT = 800;
+
     SDL_Init( SDL_INIT_EVERYTHING );
 
     //Set up screen
-    screen = SDL_SetVideoMode( 480, 800, 32, SDL_SWSURFACE );
+    screen = SDL_SetVideoMode( WIDTH, HEIGHT, 32, SDL_SWSURFACE );
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 128, 0));
     SDL_Flip(screen);
 
@@ -52,17 +54,15 @@ int main( int argc, char* args[] )
         }
         SDL_Rect keyboardRect;
         keyboardRect.x=0;
-        keyboardRect.y=800-(int)(400*keyboardPosition);
-        keyboardRect.w=480;
-        keyboardRect.h=400;
+        keyboardRect.y=HEIGHT-((HEIGHT/2)*keyboardPosition);
+        keyboardRect.w=WIDTH;
+        keyboardRect.h=(HEIGHT/2*keyboardPosition);
         SDL_FillRect(screen, &keyboardRect, keyboardColor);
 
       }
       SDL_Flip(screen);
     }
 
-    SDL_Delay(2000);
-    //Quit SDL
     SDL_Quit();
 
     return 0;
