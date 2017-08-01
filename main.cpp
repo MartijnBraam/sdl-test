@@ -1,4 +1,23 @@
 #include "SDL/SDL.h"
+#include <iostream>
+
+using namespace std;
+
+#define TICK_INTERVAL    30
+
+static Uint32 next_time;
+
+Uint32 time_left(void)
+{
+    Uint32 now;
+
+    now = SDL_GetTicks();
+    if(next_time <= now)
+        return 0;
+    else
+        return next_time - now;
+}
+
 
 int main( int argc, char* args[] )
 {
@@ -21,6 +40,8 @@ int main( int argc, char* args[] )
     float keyboardTargetPosition = 1;
 
     auto keyboardColor = SDL_MapRGB(screen->format, 30, 30, 30);
+
+    next_time = SDL_GetTicks() + TICK_INTERVAL;
 
     while(quit == false){
       SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 128, 0));
@@ -48,19 +69,21 @@ int main( int argc, char* args[] )
 
       if(keyboardPosition != keyboardTargetPosition){
         if(keyboardPosition > keyboardTargetPosition){
-          keyboardPosition -= 0.01;
+          keyboardPosition -= (keyboardPosition - keyboardTargetPosition) / 3;
         }else{
-          keyboardPosition += 0.01;
+          keyboardPosition += (keyboardTargetPosition - keyboardPosition) / 5;
         }
         SDL_Rect keyboardRect;
         keyboardRect.x=0;
-        keyboardRect.y=HEIGHT-((HEIGHT/2)*keyboardPosition);
+        keyboardRect.y=(int)(HEIGHT-((HEIGHT/2)*keyboardPosition));
         keyboardRect.w=WIDTH;
-        keyboardRect.h=(HEIGHT/2*keyboardPosition);
+        keyboardRect.h=(int)(HEIGHT/2*keyboardPosition);
         SDL_FillRect(screen, &keyboardRect, keyboardColor);
-
+        cout << keyboardPosition << endl;
       }
-      SDL_Flip(screen);
+      SDL_Delay(time_left());
+      next_time += TICK_INTERVAL;
+      SDL_UpdateRect(screen, 0, 0, 0, 0);
     }
 
     SDL_Quit();
